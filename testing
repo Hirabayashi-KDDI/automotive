@@ -1,0 +1,759 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head>
+<meta name="generator" content="HTML Tidy for Linux/x86 (vers 1 September 2005), see www.w3.org" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>VISS & VIAS Implementation Report Plan</title>
+
+<style type="text/css" xml:space="preserve">
+/*<![CDATA[*/
+body {
+    margin-left: 4%;
+    margin-right: 3%;
+}
+table {
+    border: black;
+    border-width: 1px;
+}
+h2 { font-size: 150% }
+h3 { font-size: 120%; font-weight: bold }
+h4 { font-size: 110%; font-weight: bold}
+.tocline { list-style: none; }
+th { background-color: rgb(180,255,180) }
+td { background-color: rgb(234,255,234) }
+.comment {color: green; font-style: italic}
+.remove {text-decoration: line-through;color: black;}
+.new { color: red; }
+.working {background-color: rgb(255,234,234); padding:0.2em;}
+.fill-in {background-color: rgb(255,234,234);}
+pre.example {
+   font-family: "Courier New", monospace;
+   white-space: pre;
+   background-color: rgb(204,204,255);
+   padding: 0.5em;
+   border: none;
+   border-width: 0;
+   margin-left: 0;
+   font-size: 100%;
+   width: 100%;
+}
+
+table { background-color: rgb(180,180,180) }
+
+table.testlist {
+   border: black;
+   border-width: 1px;
+}
+table.grammars th, table.commands th, able.attrs th, table.testlist th {
+   background-color: rgb(180,255,180);
+   font-size: 10pt;
+   vertical-align: top; text-align: left;
+}
+table.grammars td, table.commands td, table.attrs td, table.testlist td {
+   background-color: rgb(234,255,234);
+   font-size: 10pt;
+   vertical-align: top; text-align: left;
+}
+
+table.attrs {margin-top: 5px}
+/*]]>*/
+</style>
+<link rel="stylesheet" type="text/css" href=
+"http://www.w3.org/StyleSheets/general.css" />
+<style type="text/css">
+/*<![CDATA[*/
+ span.c4 {font-size: 80%}
+ em.c3 {font-style: normal}
+ div.c2 {margin-left: 2em;}
+ span.c1 {color: #FF0000}
+/*]]>*/
+
+* {
+  line-height: 1.25;
+}
+
+.auto-style1 {
+	font-family: monospace;
+}
+
+</style>
+<style type="text/css">@media print { #feedlyMiniIcon { display: none; } }</style></head>
+<body>
+<div class="head">
+
+<a href="http://www.w3.org/" shape=
+"rect"><img height="48" alt="W3C" src=
+"http://www.w3.org/Icons/w3c_home" width="72" border="0" /></a>
+<h1 id="h_ir">Vehicle Information Service Specification<br>
+ & Vehicle Information API Specification<br>
+Implementation Report Plan</h1>
+<h2>10 May 2017</h2>
+<dl>
+<dt>Editor:</dt>
+<dd>Tatsuhiko Hirabayashi, KDDI</dd>
+</dl>
+<p class="copyright"><a href="http://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright
+©</a> 2017 <a href="http://www.w3.org/"><acronym title="World Wide Web Consortium">W3C</acronym></a> <sup>®</sup>
+(<a href="http://www.csail.mit.edu/"><acronym title="Massachusetts Institute of Technology">MIT</acronym></a> ,
+<a href="http://www.ercim.eu/"><acronym title="European Research Consortium for Informatics and Mathematics">ERCIM</acronym></a>
+, <a href="http://www.keio.ac.jp/">Keio</a>), All Rights Reserved.
+W3C <a href="http://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>,
+<a href="http://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a>,
+<a href="http://www.w3.org/Consortium/Legal/copyright-documents">document
+use</a> rules apply.</p>
+<hr title="Separator for header" /></div>
+
+<h2 id="h_toc"><a id="toc" shape="rect" name="toc">
+Table of Contents</a></h2>
+<ul>
+<li class="tocline">1. <a href="#intro" shape="rect">Introduction</a>
+<ul>
+<li class="tocline">1.1 <a href="#objectives" shape="rect">Implementation report objectives</a></li>
+<li class="tocline">1.2 <a href="#non_objectives" shape="rect">Implementation report non-objectives</a></li>
+</ul>
+</li>
+<li class="tocline">2. <a href="#cr_work" shape="rect">Work during the Candidate Recommendation period</a></li>
+
+<li class="tocline">3. <a href="#participate" shape="rect">Participating in the implementation report</a></li>
+<li class="tocline">4. <a href="#pr_entrance_crit" shape="rect">Entrance criteria for the Proposed Recommendation phase</a></li>
+<li class="tocline">5. <a href="#report_reqs" shape="rect">Implementation report requirements</a>
+<ul>
+<li class="tocline">5.1 <a href="#DetailedReqs" shape="rect">Detailed requirements for implementation report</a></li>
+<li class="tocline">5.2 <a href="#NotesOnTesting" shape="rect">Notes on testing</a></li>
+
+<li class="tocline">5.3 <a href="#out_of_scope" shape="rect">Out of
+scope</a></li>
+
+</ul>
+</li>
+<li class="tocline">6. <a href="#TestAssrtn" shape="rect">Test assertions</a></li>
+<ul>
+<li class="tocline">6.1 <a href="#VISSTestAssrtn" shape="rect">VISS test assertions</a></li>
+<li class="tocline">6.2 <a href="#VIASTestAssrtn" shape="rect">VIAS test assertions</a></li>
+</ul>
+
+<li class="tocline">7. <a href="#TestSystems" shape="rect">Test Systems</a>
+<ul>
+<li class="tocline">7.1 <a href="#TestArch" shape="rect">Testing architecture
+</a></li>
+<li class="tocline">7.2 <a href="#TestSuite">Test suite</a></li>
+</ul>
+</li>
+
+<li class="tocline"><a href="#appendices" shape="rect">Appendices</a>
+<ul>
+<li class="tocline">Appendix A. <a href="#appxA" shape="rect">Implementation report submission format</a></li>
+<li class="tocline">Appendix B. <a href="#appxB" shape="rect">Change log</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="h_intro"><a id="intro" name="intro">
+1. Introduction</a></h2>
+
+<p>The Vehicle Information Service Specification and Vehicle Information API Specification
+(hereinafter referred to as "VISS" and "VIAS", respectively) entered the Candidate Recommendation period on <strong> xx May 2017 and yy June 2017</strong>, respectively. (xx, yy: TBD)</p> 
+
+<p>Preparation of an Implementation Report is a key criterion for moving beyond 
+the Candidate Recommendation phase. This document describes the requirements 
+for the Implementation Report and the process that the Automotive Working Group 
+will follow in preparing the report.</p>
+
+<h4 id="h_objectives"><a id="objectives" name="objectives">
+1.1 Implementation report objectives</a></h4>
+<ol>
+<li>Must verify that the specification is implementable.</li>
+<li>Must demonstrate interoperability of implementations of the specification.</li>
+</ol>
+
+<h4 id="h_non_objectives"><a id="non_objectives" name="non_objectives">
+1.2 Implementation report non-objectives</a></h4>
+<ol>
+<li>The IR does not attempt conformance testing of implementations.</li>
+</ol>
+
+<h2 id="h_cr_work"><a id="cr_work" name="cr_work">
+2. Work during the Candidate Recommendation period</a></h2>
+<p>During the CR period, the Working Group will carry out the following activities:</p>
+<ol>
+<li>Clarification and improvement of the exposition of the specification.</li>
+<li>Disposing of comments that are communicated to the WG during the CR period.</li>
+<li>Preparation of an Implementation Report meeting the criteria outlined in this document.</li>
+</ol>
+
+<h2 id="h_participate"><a id="participate" name="participate">
+3. Participating in the implementation report</a></h2>
+<p>You are invited to contribute to the assessment of the W3C Vehicle Information Service Specification and Vehicle Information API Specification by participating in the Implementation Reportprocess.</p>
+
+<ul>
+<li>Deadline for submission of a VISS and VIAS Implementation Report is <strong>31 July 2017</strong>.</li>
+<li>All the test assertions are reported in the <a shape="rect">table below</a> and the <a shape="rect" href="#appxA">report submission format</a> is provided withthis document.</li>
+<li>Comments on this document or requests for further information
+should be sent to the Working Group's public mailing list <a href="mailto:public-automotive@w3.org">public-automotive@w3.org</a> (<a href="https://lists.w3.org/Archives/Public/public-automotive/">archive</a>).
+If an updated version of this document or the test assertion set is
+published, a notification will be sent to this mailing list. When
+sending e-mail, please put the text "[viss/vias irp]" in the subject, 
+preferably like this: "[viss/vias irp] <em> ...summary of comment... </em>".</li>
+</ul>
+
+<h2 id="h_pr_entrance_crit"><a id="pr_entrance_crit" name="pr_entrance_crit">4. Entrance criteria for the Proposed Recommendation phase</a></h2>
+<p>The Automotive Working Group established the following entrance criteria for the Proposed Recommendation phase in the Request for CR:</p>
+<ol>
+<li>Sufficient reports of implementation experience have been gathered to demonstrate that constituents of the  Vehicle Information Interfaces based on the VISS or VIAS are implementable and have compatible behavior.</li>
+<li>Specific Implementation Report Requirements (<a href="#report_reqs">outlined below</a>) have been met.</li>
+<li>The Working Group has formally addressed and responded to all public comments received by the Working Group.</li>
+</ol>
+
+<h2 id="h_report_reqs"><a id="report_reqs" name="report_reqs">
+5. Implementation report requirements</a></h2>
+
+<h4 id="h_DetailedReqs"><a id="DetailedReqs" shape="rect" name="DetailedReqs">
+5.1 Detailed requirements for implementation report</a></h4>
+<ol>
+<li>The IR must cover all specified features in the specification. For
+each feature the IR should indicate:
+<ul>
+<li>Implementability of the feature specification.</li>
+<li>Feature utility/usefulness based on feedback from implementers.</li>
+</ul>
+</li>
+<li>Feature status is a factor in test coverage in the report:
+<ul>
+<li>All the specification features must have at least <strong>two implementations</strong>. <br>
+&emsp;(Refer to <a href="https://www.w3.org/2015/Process-20150901/#implementation-experience"> https://www.w3.org/2015/Process-20150901/#implementation-experience</a>)</li>
+<li>Implementations that do not implement a required specification feature must 
+document the reason for not implementing the feature.</li>
+</ul>
+</li>
+</ol>
+
+<h4 id="h_NotesOnTesting"><a id="NotesOnTesting" name="NotesOnTesting">
+5.2 Notes on testing</a></h4>
+<div class="c2">
+<p>A implementation report must indicate the outcome of evaluating the implementation 
+with respect to each of the test assertions. </p>
+</div>
+<h4 id="h_out_of_scope"><a id="out_of_scope" name="out_of_scope">
+5.3 Out of scope</a></h4>
+<div class="c2">
+<p>The VISS & VIAS Implementation Report will not cover:</p>
+<ul>
+<li>Vehicle Signal Specification specified in GENIVI Alliance</li>
+<li>Vehicle Signal generator for testing</li>
+</ul>
+</div>
+
+<h2 id="h_TestAssrtn"><a id="TestAssrtn" name="TestAssrtn">
+6. Test assertions</a></h2>
+<p>The aim of this section is to describe the range of test
+assertions developed for VISS and VIAS. </p>
+<p>The <b>Spec</b> column identifies the section of VISS and VIAS from
+which the assertion was derived. <br>
+The <b>Assrt ID</b> column uniquely identifies the assertion. <br>
+&emsp; (Numbering of ID is initially assigned in a skipping manner so that assertion can be easily added.)
+The <b>Feature</b> column indicates the specific elements or attributes which the test assertion 
+applies to. <br>
+The <b>Semantics</b> column specifies the semantics ofthe feature or the constraint which must be 
+met. <br>
+The <b>Result</b> column will be annotated with the number of 'pass'(P), 'fail'(F), and 'not implemented' (NI) in the set of implementation reports.</p>
+
+<h4 id="h_VISSTestAssrtn"><a id="VISSTestAssrtn" name="VISSTestAssrtn">
+6.1 VISS test assertions</a></h4>
+<p>The table below lists all the assertions that were derived from the Vehicle Information Service Specification. The latest table is shown in the <a href="https://github.com/w3c/automotive/issues/124">GitHub</a>  for editing.</p>
+<table>
+	<tr>
+		<th>Spec</th>
+		<th>Assrtn ID</th>
+		<th>Feature</th>
+		<th>Semantic</th>
+		<th>Results(P/F/NI)</th>
+	</tr>
+	<tr>
+		<td>6.(Access Control &amp; Autorization)</td>
+		<td>0005</td>
+		<td>Use of a security token</td>
+		<td>For each security principal authorized by the server, the client SHALL obtain and pass a security token (see RFC6749) to the server using a message containing an &#039;authorize&#039; action.</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>6.(WebSocket Channel Authorization)</td>
+		<td>0010</td>
+		<td>Channel independency in an  application</td>
+		<td>When the client have more than two websocket channels connected to the server, the access-control state of one channel should not affect others.</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>6.(WebSocket Channel Authorization)</td>
+		<td>0020</td>
+		<td>Channel independency among clients</td>
+		<td>The access-control state of a websocket channel should not affect the other applications.</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>6.(WebSocket Channel Authorization)</td>
+		<td>0030</td>
+		<td>Status will changed on correct authorization </td>
+		<td>When a websocket channel is not privileged and the server receives valid &#039;authorize&#039; request, the privileged level (=access control state of the channel) should be changed to higer level.</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>6.(WebSocket Channel Authorization)</td>
+		<td>0031</td>
+		<td>Status unchnaged on incorrect authorization </td>
+		<td>When a websocket channel is privileged and the server receives invalid &#039;authorize&#039; request, the privileged level (=access control state of the channel) should not be changed.</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>6.(WebSocket Channel Authorization)</td>
+		<td>0040</td>
+		<td>No privilege on opening a channel</td>
+		<td>When the client initiate a new websocket channel connection to the server, the access-control state of the channel should be the lowest level.</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>6.(Use of Encryption)</td>
+		<td>0043</td>
+		<td>All vehicle signal and data communications </td>
+		<td>All vehicle signal and data communications between the client and server MUST be encrypted.</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>6.(Token Renewal)</td>
+		<td>0046</td>
+		<td>Lifetime of a token</td>
+		<td>Each security token SHALL have a specified lifetime during which it is valid. If on receiving a request for signals that are subject to access-control, the server determines that the request is unauthorized because the token has expired, the server returns an error response indicating the fact and the client requests a new token from the Security Authority and repeat the request.</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>6.(Token Renewal)</td>
+		<td>0048</td>
+		<td>Forbidden request</td>
+		<td>If the server returns an error response indicating that the request is forbidden, renewing the security token does not make the request valid. In this case, the client should not repeat the request unless some other change has been made that may mean the request is now valid.</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>7.initialize</td>
+		<td>0050</td>
+		<td>establish a WebSocket session with &#039;wss&#039; shema </td>
+		<td>When the client makes a request to the server to create a new WebSocket session whose schema and sub-protocol are &#039;wss&#039; and &#039;wvss&#039; with a version number suffix, a WebSocket session is created.</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>7.initialize</td>
+		<td>0060</td>
+		<td>establish a WebSocket session with &#039;ws&#039; shema </td>
+		<td>When the client makes a request to the server to create a new WebSocket session whose schema and sub-protocol are &#039;ws&#039; and &#039;wvss&#039; with a version number suffix, the server refuses the request.</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>7.initialize</td>
+		<td>0070</td>
+		<td>establish a WebSocket session with incorrect sub-protocol</td>
+		<td>When the client makes a request to the server to create a new WebSocket session whose schema and sub-protocol are &#039;wss&#039; and incorrect, respectively, the server refuses the request.</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>8.(authorize)</td>
+		<td>0080</td>
+		<td>authorize correctly</td>
+		<td>When the client makes a request with a correct &#039;authorize&#039; action to the server, a JSON data object defined as &#039;authorizeSuccessResponse&#039; is returned.</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>8.(authorize)</td>
+		<td>0090</td>
+		<td>authorize incorrectly</td>
+		<td>When the client makes a request with an incorrect &#039;authorize&#039; action to the server, a JSON data object defined as &#039;authorizeErrorResponse&#039; is returned.</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>8.(VSS Request)</td>
+		<td>0100</td>
+		<td>get a VSS tree with a valid request without wildcards</td>
+		<td>When the client makes a request with a correct &#039;getVSS&#039; action without wildcards to the server, a JSON data object defined as &#039;vssSuccessResponse&#039; is returned. </td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>8.(VSS Request)</td>
+		<td>0105</td>
+		<td>get a VSS tree without specifying path</td>
+		<td>When the client makes a request with a correct &#039;getVSS&#039; action without specifying &#039;path&#039;,a JSON data object defined as &#039;vssSuccessResponse&#039; is returned in which entire VSS tree is enclosed.</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>8.(VSS Request)</td>
+		<td>0110</td>
+		<td>get a VSS tree with a valid request with a wildcard</td>
+		<td>When the client makes a request with a correct &#039;getVSS&#039; action with a wildcard to the server,  a JSON data object defined as &#039;vssSuccessResponse&#039; is returned. </td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>8.(VSS Request)</td>
+		<td>0120</td>
+		<td>get a VSS tree with an invalid request</td>
+		<td>When the client makes a request with an incorrect &#039;getVSS&#039; action  to the server, a JSON data object defined as &#039;vssErrorResponse&#039; is returned. </td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>8.(Get)</td>
+		<td>0130</td>
+		<td>get signals and data with a valid request without wildcards</td>
+		<td>When the client makes a request with a correct &#039;get&#039; action without wildcards to the server,  a JSON data object defined as &#039;getSuccessResponse&#039; is returned. </td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>8.(Get)</td>
+		<td>0140</td>
+		<td>get signals and data with an valid request with a wildcard</td>
+		<td>When the client makes a request with a correct &#039;get&#039; action with a wildcard to the server, a JSON data object defined as &#039;getSuccessResponse&#039; is returned. </td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>8.(Get)</td>
+		<td>0150</td>
+		<td>get signals and data with an invalid request</td>
+		<td>When the client makes a request with an incorrect &#039;get&#039; action with to the server, a JSON data object defined as &#039;getErrorResponse&#039; is returned. </td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>8.(Set)</td>
+		<td>0160</td>
+		<td>set a signal with a valid request</td>
+		<td>When the client makes a request with a correct &#039;set&#039; action to the server, a JSON data object defined as &#039;setSuccessResponse&#039; is returned. </td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>8.(Set)</td>
+		<td>0170</td>
+		<td>set a signal with an invalid request</td>
+		<td>When the client makes a request with an incorrect &#039;set&#039; action with to the server, a JSON data object defined as &#039;setErrorResponse&#039; is returned. </td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>8.(subscribe)</td>
+		<td>0180</td>
+		<td>create a new subscription</td>
+		<td>When the client makes a request to the server to create a new subscription, a JSON data object defined as &#039;subscribeSuccessResponse&#039; is returned. </td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>8.(subscribe)</td>
+		<td>0190</td>
+		<td>receive the value continuously</td>
+		<td>When &quot;subscribe&quot; request has been successed, client will receive a notificaton with the JSON data object continuously.</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>8.(subscribe)</td>
+		<td>0200</td>
+		<td>unique subscriptionId</td>
+		<td>The server ensures that a new unique subscription id value is returned for each successful subscription request for a particular WebSocket connection. </td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>8.(subscribe)</td>
+		<td>0210</td>
+		<td>subscription error</td>
+		<td>If the client request non-existent data item to the server, the client receive a subscribeErrorResponse.</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>8.(subscribe)</td>
+		<td>0220</td>
+		<td>unique subscription ID</td>
+		<td>A subscription ID should be valid only for the channel that requested subscription. (Note: Provision of fake messages having the same ID on the channel will be needed to verify this feature.)</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>8.(subscribe)</td>
+		<td>0230</td>
+		<td>subscription notification error</td>
+		<td>If the server is unable to satisfy the initial demands of the client, the client may receive a subscriptionNotificationError.</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>8.(unsubscribe)</td>
+		<td>0240</td>
+		<td>end a subscription</td>
+		<td>&quot;The client passes an unsubscribeRequest with the properly &quot;&quot;subscriptionId&#039; to the server. If the server is able to satisfy the request, it returns an unsubscribeSuccessResponse. After that,  the client does not receive the JSON data object.</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>8.(unsubscribe)</td>
+		<td>0250</td>
+		<td>unsubscribe error</td>
+		<td>If the client sends an invalid subscriptionId, the server responds an unsubscribeErrorResponse to the client.</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>8.(unsubscribe)</td>
+		<td>0260</td>
+		<td>end all subscription</td>
+		<td>The client may unsubscribe from all of its subscriptions by sending an &#039;unsubscribeRequest&#039; with the action property set to &#039;unsubscribeAll&#039;. This does not require a subscriptionId value.</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>9.Filtering</td>
+		<td>0270</td>
+		<td>filter</td>
+		<td>If the client sends a &#039;subscribe&#039; with filter option, the sever responds signals with filtering such as ranges, intervals and minimum changes.</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>9.Filtering</td>
+		<td>0280</td>
+		<td>filter error</td>
+		<td>If the client sends subscribe with filters option to VSS branches, the client receieves an subscribeErrorResponse.</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>9.Filtering</td>
+		<td>0290</td>
+		<td>filter interval</td>
+		<td>According to the spcified interval of the signal in the client, data are transferred from the server to the client every that interval.</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>9.Filtering</td>
+		<td>0300</td>
+		<td>filter range</td>
+		<td>If the client specifies the &quot;Range&quot; of the signal, the client receives data when the value is between &quot;below&quot; and &quot;above&quot;.</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>9.Filtering</td>
+		<td>0310</td>
+		<td>filter minimum change</td>
+		<td>If the client specifies the &quot;Minimum change&quot; of the signal, the client receives data when the value has changed by a specified amount.</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>9.Filtering</td>
+		<td>0320</td>
+		<td>filter some conditions</td>
+		<td>If the client specifies two or more conditions among &#039;interval&#039;, &#039;range&#039; and &#039;minimum change&#039;, the client receives data when the specified multiple conditions are satisfied.</td>
+		<td></td>
+</table>
+<h4 id="h_VIASTestAssrtn"><a id="VIASTestAssrtn" name="VIASTestAssrtn">
+6.2 VIAS test assertions</a></h4>
+<p>The table below lists all the assertions that were derived from the Vehicle Information API Specification. The latest table is shown in the <a href="https://github.com/w3c/automotive/issues/124">GitHub</a>  for editing.</p>
+<table>
+	<tr>
+		<th>Spec</th>
+		<th>Assrtn ID</th>
+		<th>Feature</th>
+		<th>Semantic</th>
+		<th>Results(P/F/NI)</th>
+	</tr>
+	<tr>
+		<td>6.(VSS Request)</td>
+		<td>1100</td>
+		<td>get a VSS tree with a valid request without wildcards</td>
+		<td>When the client makes a request with a correct &#039;getVSS&#039; action without wildcards to the server, a JSON data object defined as &#039;vssSuccessResponse&#039; is returned. </td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>6.(VSS Request)</td>
+		<td>1105</td>
+		<td>get a VSS tree without specifying path</td>
+		<td>When the client makes a request with a correct &#039;getVSS&#039; action without specifying &#039;path&#039;,a JSON data object defined as &#039;vssSuccessResponse&#039; is returned in which entire VSS tree is enclosed.</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>6.(VSS Request)</td>
+		<td>1110</td>
+		<td>get a VSS tree with a valid request with a wildcard</td>
+		<td>When the client makes a request with a correct &#039;getVSS&#039; action with a wildcard to the server,  a JSON data object defined as &#039;vssSuccessResponse&#039; is returned. </td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>6.(VSS Request)</td>
+		<td>1120</td>
+		<td>get a VSS tree with an invalid request</td>
+		<td>When the client makes a request with an incorrect &#039;getVSS&#039; action  to the server, a JSON data object defined as &#039;vssErrorResponse&#039; is returned. </td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>6.(Get)</td>
+		<td>1130</td>
+		<td>get signals and data with a valid request without wildcards</td>
+		<td>When the client makes a request with a correct &#039;get&#039; action without wildcards to the server,  a JSON data object defined as &#039;getSuccessResponse&#039; is returned. </td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>6.(Get)</td>
+		<td>1140</td>
+		<td>get signals and data with an valid request with a wildcard</td>
+		<td>When the client makes a request with a correct &#039;get&#039; action with a wildcard to the server, a JSON data object defined as &#039;getSuccessResponse&#039; is returned. </td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>6.(Get)</td>
+		<td>1150</td>
+		<td>get signals and data with an invalid request</td>
+		<td>When the client makes a request with an incorrect &#039;get&#039; action with to the server, a JSON data object defined as &#039;getErrorResponse&#039; is returned. </td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>6.(Set)</td>
+		<td>1160</td>
+		<td>set a signal with a valid request</td>
+		<td>When the client makes a request with a correct &#039;set&#039; action to the server, a JSON data object defined as &#039;setSuccessResponse&#039; is returned. </td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>6.(Set)</td>
+		<td>1170</td>
+		<td>set a signal with an invalid request</td>
+		<td>When the client makes a request with an incorrect &#039;set&#039; action with to the server, a JSON data object defined as &#039;setErrorResponse&#039; is returned. </td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>6.(subscribe)</td>
+		<td>1180</td>
+		<td>create a new subscription</td>
+		<td>When the client makes a request to the server to create a new subscription, a JSON data object defined as &#039;subscribeSuccessResponse&#039; is returned. </td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>6.(subscribe)</td>
+		<td>1190</td>
+		<td>receive the value continuously</td>
+		<td>When &quot;subscribe&quot; request has been successed, client will receive a notificaton with the JSON data object continuously.</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>6.(subscribe)</td>
+		<td>1200</td>
+		<td>unique subscriptionId</td>
+		<td>The server ensures that a new unique subscription id value is returned for each successful subscription request for a particular WebSocket connection. </td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>6.(subscribe)</td>
+		<td>1210</td>
+		<td>subscription error</td>
+		<td>If the client request non-existent data item to the server, the client receive a subscribeErrorResponse.</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>6.(subscribe)</td>
+		<td>1230</td>
+		<td>subscription notification error</td>
+		<td>If the server is unable to satisfy the initial demands of the client, the client may receive a subscriptionNotificationError.</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>6.(unsubscribe)</td>
+		<td>1240</td>
+		<td>end a subscription</td>
+		<td>&quot;The client passes an unsubscribeRequest with the properly &quot;&quot;subscriptionId&#039; to the server. If the server is able to satisfy the request, it returns an unsubscribeSuccessResponse. After that,  the client does not receive the JSON data object.</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>6.(unsubscribe)</td>
+		<td>1250</td>
+		<td>unsubscribe error</td>
+		<td>If the client sends an invalid subscriptionId, the server responds an unsubscribeErrorResponse to the client.</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>6.(unsubscribe)</td>
+		<td>1260</td>
+		<td>end all subscription</td>
+		<td>The client may unsubscribe from all of its subscriptions by sending an &#039;unsubscribeRequest&#039; with the action property set to &#039;unsubscribeAll&#039;. This does not require a subscriptionId value.</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>7.Filtering</td>
+		<td>1270</td>
+		<td>filter</td>
+		<td>If the client sends a &#039;subscribe&#039; with filter option, the sever responds signals with filtering such as ranges, intervals and minimum changes.</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>7.Filtering</td>
+		<td>1280</td>
+		<td>filter error</td>
+		<td>If the client sends subscribe with filters option to VSS branches, the client receieves an subscribeErrorResponse.</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>7.Filtering</td>
+		<td>1290</td>
+		<td>filter interval</td>
+		<td>According to the spcified interval of the signal in the client, data are transferred from the server to the client every that interval.</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>7.Filtering</td>
+		<td>1300</td>
+		<td>filter range</td>
+		<td>If the client specifies the &quot;Range&quot; of the signal, the client receives data when the value is between &quot;below&quot; and &quot;above&quot;.</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>7.Filtering</td>
+		<td>1310</td>
+		<td>filter minimum change</td>
+		<td>If the client specifies the &quot;Minimum change&quot; of the signal, the client receives data when the value has changed by a specified amount.</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>7.Filtering</td>
+		<td>1320</td>
+		<td>filter some conditions</td>
+		<td>If the client specifies two or more conditions among &#039;interval&#039;, &#039;range&#039; and &#039;minimum change&#039;, the client receives data when the specified multiple conditions are satisfied.</td>
+		<td></td>
+</table>
+
+<h2 id="h_TestSystems"><a id="TestSystems" name="Test Systems">
+7. Test systems</a></h2>
+<h4 id="h_TestArch"><a id="TestArch" name="Testing architecture">
+7.1 Testing architecture</a></h4>
+<p>A conceptual diagram that shows the interfaces and scope of test for both VISS and VIAS is shown in Fig.1.
+</p>
+<figure>
+<img src="images/W3C_VISS&VIAS_Testing_Interface.png" alt="Component diagram showing W3C Vehicle Information APIs and testing points" width="70%" height="70%">
+<figcaption><b>Fig.1 A Conceptual Diagram of VISS&VIAS Implementation and Test Interfaces</b></figcaption>
+</figure>
+
+<h4 id="h_TestSuite"><a id="TestSuite" name="Test suite">
+7.2  Test suite</a></h4>
+<p>Test configurations for VISS and VIAS by W3C test suite are shown in Fig.2 and Fig.3, respectively.</p>
+<figure>
+<img src="images/W3C_Test_Config_for_VISS.png" alt="A Conceptual Diagram of Test Suite for VISS" width="70%" height="70%">
+<figcaption><b>Fig.2 A Test Configuration for VISS by using W3C Test Suite</b></figcaption>
+</figure>
+<figure>
+<img src="images/W3C_Test_Config_for_VIAS.png" alt="A Conceptual Diagram of Test Suite for VIAS" width="70%" height="70%">
+<figcaption><b>Fig.3 A Test Configuration for VIAS by using W3C Test Suite </b></figcaption>
+</figure>
+<p>A test runner site[1] and  GitHub repository[2] provided by W3C is available to conduct the  above testing.<br>
+[1] <a href="http://w3c-test.org/tools/runner/index.html"> http://w3c-test.org/tools/runner/index.html</a> <br>
+[2] <a href="https://github.com/w3c/web-platform-tests"> https://github.com/w3c/web-platform-tests</a></p>
+<p>These test suites are licensed under both the W3C Test Suite License[3].<br>
+[3] <a href="https://www.w3.org/Consortium/Legal/2008/04-testsuite-copyright.html"> https://www.w3.org/Consortium/Legal/2008/04-testsuite-copyright.html</a><br>
+In the case of VISS/VIAS, Vehicle Signal Generator will be newly required to supply vehicle information to WebSocket Vehicle Signal Server (WVSS).</p>
+
+<h2 id="h_appendices"><a id="appendices" name="appendices">Appendices</a></h2>
+<h4 id="h_appxA"><a id="appxA" name="appendix">Appendix A -
+Implementation report submission format</a></h4>
+<p>The following GitHub repository[4] should be used as a template for providing an implementation report.<br>
+[4] <a href="https://github.com/w3c/automotive/issues/126"> https://github.com/w3c/automotive/issues/126
+</p>
+
+<h4 id="h_appxB"><a id="appxB" name="appendix">Appendix B -
+Changes Log</a></h2>
+<p>Changes after after January 10, 2017</p>
+<ul>
+<li>[Month Date, Year] Assertion ID. Brief description of change</li>
+<li>[Jan 11, 2017] Fixed URLs of GitHub issues</li>
+<li>[Jan 11, 2017] Fixed URLs of GitHub issues</li>
+<li>[May 09, 2017] Changed this document to html format</li>
+<li>[May 09, 2017] Modified test assertions for VISS based on comments</li>
+<li>[May 09, 2017] Tentatively added test assertions for VIAS</li>
+</ul>
+
+<div class="navbar">
+<hr/></div>
+</body></html>
